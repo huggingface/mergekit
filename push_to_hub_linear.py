@@ -105,7 +105,7 @@ def generate_model_string(output_dir):
     # Combine into final strings
     revs_part = "_".join(model_revs)
     weights_part = "-".join(weights)
-    result_string = f"{revs_part}_weights-{weights_part}"
+    result_string = f"{revs_part}_linear_weights-{weights_part}"
     
     # Model name with -Merges suffix
     model_name = f"{base_model}-Merges" if base_model else "Unknown-Model-Merges"
