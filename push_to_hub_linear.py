@@ -117,6 +117,8 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Extract model information from YAML config files")
     parser.add_argument('--path', type=str, required=True, 
                         help='Path to the YAML file or Markdown file containing YAML')
+    parser.add_argument('--revision', type=str, 
+                        help='Custom revision name to use instead of auto-generated one')
     return parser.parse_args()
 
 def main():
@@ -125,15 +127,24 @@ def main():
     output_dir = args.path
     
     try:
-        model_name, result_string = generate_model_string(output_dir)
+        model_name, auto_revision = generate_model_string(output_dir)
         print(f"Model name: {model_name}")
-        print(f"Result string: {result_string}")
+        
+        # Use the custom revision if provided, otherwise use the auto-generated one
+        revision = args.revision if args.revision else auto_revision
+        print(f"Using revision: {revision}")
+        
+        if args.revision:
+            print(f"Using custom revision name: {revision}")
+        else:
+            print(f"Using auto-generated revision name: {revision}")
+            
     except Exception as e:
         print(f"Error processing file {output_dir}: {e}")
         return 1
 
     # Push to the Hub
-    future = push_to_hub_revision(model_name, result_string, output_dir)
+    future = push_to_hub_revision(model_name, revision, output_dir)
     if future.done():
         print("Push to Hub completed successfully.")
     

@@ -9,7 +9,7 @@ import time
 from pathlib import Path
 
 # Define paths
-RECIPE_PATH = "recipes/R1-Distill-Qwen-Math-7B/v00.00_v01.00.yml"
+RECIPE_PATH = "recipes/R1-Distill-Qwen-Math-7B/v00.02_v01.02_linear.yml"
 OUTPUT_DIR = "scratch/v00.00_v01.00"
 
 def load_yaml(file_path):
@@ -36,7 +36,7 @@ def run_merge(yaml_path, output_dir):
 
 def run_push_to_hub(output_dir):
     """Run push_to_hub.py command."""
-    cmd = ["python", "push_to_hub.py", "--path", output_dir]
+    cmd = ["python", "push_to_hub_linear.py", "--path", output_dir]
     print(f"Executing: {' '.join(cmd)}")
     subprocess.run(cmd, check=True)
 
