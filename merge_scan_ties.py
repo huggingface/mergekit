@@ -136,19 +136,19 @@ def main():
             if os.path.exists(args.output_dir):
                 shutil.rmtree(args.output_dir)
             
-            # # Run merge
-            # try:
-            #     run_merge(temp_yaml_path, args.output_dir)
+            # Run merge
+            try:
+                run_merge(temp_yaml_path, args.output_dir)
                 
-            #     # Push to hub
-            #     run_push_to_hub(args.output_dir)
+                # Push to hub
+                run_push_to_hub(args.output_dir)
                 
-            #     print(f"Successfully processed {lambda_str}{density_str}")
-            # except Exception as e:
-            #     print(f"Error processing {lambda_str}{density_str}: {e}")
+                print(f"Successfully processed {lambda_str}{density_str}")
+            except Exception as e:
+                print(f"Error processing {lambda_str}{density_str}: {e}")
                 
-            # # Add a short pause between iterations
-            # time.sleep(2)
+            # Add a short pause between iterations
+            time.sleep(2)
 
 if __name__ == "__main__":
     main()

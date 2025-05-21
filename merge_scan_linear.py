@@ -1,16 +1,11 @@
-#!/usr/bin/env python3
-# filepath: /fsx/lewis/git/hf/mergekit/merge_scan.sh
-
 import os
 import yaml
 import shutil
 import subprocess
 import time
-from pathlib import Path
+import argparse
 
-# Define paths
-RECIPE_PATH = "recipes/R1-Distill-Qwen-Math-7B/v00.02_v01.02_linear.yml"
-OUTPUT_DIR = "scratch/v00.00_v01.00"
+YAML_DIR = "scratch/tmp_yamls/linear"
 
 def load_yaml(file_path):
     """Load YAML file and return its content."""
@@ -40,37 +35,66 @@ def run_push_to_hub(output_dir):
     print(f"Executing: {' '.join(cmd)}")
     subprocess.run(cmd, check=True)
 
+def parse_arguments():
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(description='Run model merges with varying weights.')
+    parser.add_argument('--weight-start', type=float, default=0.5,
+                        help='Starting weight for the first model (default: 0.5)')
+    parser.add_argument('--weight-end', type=float, default=0.5,
+                        help='Ending weight for the first model (default: 0.5)')
+    parser.add_argument('--step-size', type=float, default=0.1,
+                        help='Step size between weights (default: 0.1)')
+    parser.add_argument('--recipe', type=str, default=None,
+                        help=f'Path to the recipe YAML file')
+    parser.add_argument('--output-dir', type=str, default=None,
+                        help=f'Base output directory')
+    return parser.parse_args()
+
 def main():
+    # Parse command-line arguments
+    args = parse_arguments()
+    
     # Load the original YAML file
-    original_yaml = load_yaml(RECIPE_PATH)
+    original_yaml = load_yaml(args.recipe)
     
     # Create a temp directory for modified YAML files
-    os.makedirs("scratch/temp_yamls", exist_ok=True)
+    os.makedirs(YAML_DIR, exist_ok=True)
     
-    # Scan through weight pairs
-    for i in range(1, 10):
-        weight_1 = round(i * 0.1, 1)
-        weight_2 = round(1.0 - weight_1, 1)
+    # Calculate weights based on step size
+    weights = []
+    current = args.weight_start
+    while current <= args.weight_end + 1e-6 if args.weight_start <= args.weight_end else current >= args.weight_end - 1e-6:
+        weights.append(round(current, 3))
+        if args.weight_start == args.weight_end:  # Only one weight
+            break
+        current = round(current + args.step_size if args.weight_start < args.weight_end else current - args.step_size, 3)
+    
+    # Process each weight
+    for weight_1 in weights:
+        weight_2 = round(1.0 - weight_1, 3)
         
         print(f"\n{'='*60}")
         print(f"PROCESSING WEIGHTS: {weight_1} and {weight_2}")
         print(f"{'='*60}\n")
         
+        # Create output directory for this specific weight
+        current_output_dir = f"{args.output_dir}_{weight_1}_{weight_2}"
+        
         # Create modified YAML file
         modified_yaml = update_weights(original_yaml.copy(), weight_1, weight_2)
-        temp_yaml_path = f"scratch/temp_yamls/v00.00_v01.00_{weight_1}_{weight_2}.yml"
+        temp_yaml_path = f"{YAML_DIR}/weights_{weight_1}_{weight_2}.yml"
         save_yaml(modified_yaml, temp_yaml_path)
         
         # Ensure output directory is clean
-        if os.path.exists(OUTPUT_DIR):
-            shutil.rmtree(OUTPUT_DIR)
+        if os.path.exists(current_output_dir):
+            shutil.rmtree(current_output_dir)
         
         # Run merge
         try:
-            run_merge(temp_yaml_path, OUTPUT_DIR)
+            run_merge(temp_yaml_path, current_output_dir)
             
             # Push to hub
-            run_push_to_hub(OUTPUT_DIR)
+            run_push_to_hub(current_output_dir)
             
             print(f"Successfully processed weights {weight_1} and {weight_2}")
         except Exception as e:
