@@ -1,0 +1,10 @@
+models:
+  - model: HuggingFaceTB/SmolLM3-SFT@v65.20-step-000006320
+    parameters:
+      weight: 0.5
+  - model: HuggingFaceTB/SmolLM3-DPO-Merges@v20.03_soup
+    parameters:
+      weight: 0.5
+merge_method: linear
+dtype: bfloat16
+chat_template: "auto"

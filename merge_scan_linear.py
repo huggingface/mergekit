@@ -25,7 +25,7 @@ def update_weights(yaml_content, weight_1, weight_2):
 
 def run_merge(yaml_path, output_dir):
     """Run mergekit-yaml command."""
-    cmd = ["mergekit-yaml", yaml_path, output_dir, "--cuda"]
+    cmd = ["mergekit-yaml", yaml_path, output_dir, "--cuda", "--trust-remote-code"]
     print(f"Executing: {' '.join(cmd)}")
     subprocess.run(cmd, check=True)
 

@@ -72,7 +72,7 @@ def create_merge_recipe(model_id, revisions, output_path, dtype="bfloat16", chat
 
 def run_merge(yaml_path, output_dir):
     """Run mergekit-yaml command."""
-    cmd = ["mergekit-yaml", yaml_path, output_dir, "--cuda"]
+    cmd = ["mergekit-yaml", yaml_path, output_dir, "--cuda", "--trust-remote-code"]
     print(f"Executing: {' '.join(cmd)}")
     subprocess.run(cmd, check=True)
 

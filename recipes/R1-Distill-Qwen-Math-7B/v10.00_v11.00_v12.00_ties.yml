@@ -1,0 +1,19 @@
+models:
+  - model: open-r1/R1-Distill-Qwen-Math-7B@v10.00-step-000003244
+    parameters:
+      weight: 0.333
+      density: 0.8
+  - model: open-r1/R1-Distill-Qwen-Math-7B@v11.00-step-000002908
+    parameters:
+      weight: 0.334
+      density: 0.8
+  - model: open-r1/R1-Distill-Qwen-Math-7B@v12.00-step-000006016
+    parameters:
+      weight: 0.333
+      density: 0.8
+merge_method: ties
+parameters:
+  lambda: 1.0
+base_model: open-r1/Qwen2.5-Math-7B-RoPE-300k
+dtype: bfloat16
+chat_template: "auto"
