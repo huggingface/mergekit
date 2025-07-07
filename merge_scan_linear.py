@@ -5,6 +5,29 @@ import subprocess
 import time
 import argparse
 
+"""
+To use this script, first create a YAML recipe with the desired models and weights. For example something like:
+
+---
+models:
+  - model: HuggingFaceTB/SmolLM3-SFT@v65.70-step-000014105
+    parameters:
+      weight: 0.5
+  - model: HuggingFaceTB/SmolLM3-DPO-Merges@v20.03_soup
+    parameters:
+      weight: 0.5
+merge_method: linear
+dtype: bfloat16
+chat_template: "auto"
+---
+
+Then run:
+
+python merge_scan_linear.py --weight-start 0.1 --weight-end 0.9 --recipe recipes/SmolLM3/long_context_dpo_merge.yml --output-dir scratch/smollm3/lc-expert-dpo-v20.03-soup/
+
+This will create a series of YAML files with varying weights, run the mergekit-yaml command for each, and push the results to the Hub.
+"""
+
 YAML_DIR = "scratch/tmp_yamls/linear"
 
 def load_yaml(file_path):
