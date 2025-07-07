@@ -6,6 +6,14 @@ import argparse
 import re
 from huggingface_hub import list_repo_refs
 
+"""
+Merge all revisions of a model with a specific revision pattern into a single "model soup".
+
+Usage:
+
+python model_soup.py --model_id HuggingFaceTB/SmolLM3-DPO --revision v20.03 --output_dir scratch/smollm3/dpo/v20.03-soup
+"""
+
 def parse_args():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Create a model soup from multiple revisions.")

@@ -1,5 +1,5 @@
 models:
-  - model: HuggingFaceTB/SmolLM3-SFT@v65.70-step-000014105
+  - model: HuggingFaceTB/SmolLM3-SFT@v65.60-step-000006340
     parameters:
       weight: 0.5
   - model: HuggingFaceTB/SmolLM3-DPO-Merges@v20.03_soup
