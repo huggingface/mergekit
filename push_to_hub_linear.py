@@ -1,3 +1,20 @@
+"""
+Push a linear-merge checkpoint to the Hugging Face Hub with a revision name.
+
+How it works:
+- Reads `README.md` in the provided output directory and extracts the first
+  YAML code block.
+- Parses the YAML `models` list to gather each model's revision (the part
+  after `@`) and the linear weights.
+- Builds a Hub repo name from the base model and a revision string that
+  encodes revisions and weights, unless a custom `--revision` is supplied.
+- Creates the repo and branch on the Hub (if needed) and uploads the folder.
+
+Usage:
+  python push_to_hub_linear.py --path /path/to/output_dir
+  python push_to_hub_linear.py --path /path/to/output_dir --revision my-tag
+"""
+
 import re
 import yaml
 import os

@@ -1,0 +1,10 @@
+models:
+  - model: lm-provers/Qwen3-4B-Thinking-2507-SFT@v08.00-step-000000372
+    parameters:
+      weight: 0.5
+  - model: Qwen/Qwen3-4B-Thinking-2507@main
+    parameters:
+      weight: 0.5
+merge_method: linear
+dtype: bfloat16
+chat_template: "auto"
